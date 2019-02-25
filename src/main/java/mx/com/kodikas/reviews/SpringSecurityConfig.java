@@ -23,13 +23,16 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
 
 	@Autowired
 	private JpaUserDetailsService userDetailsService;
+	
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
     
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-            .antMatchers("/").permitAll()
-            .antMatchers("/api/movies").hasAnyRole("USER")
-            .antMatchers("/api/movies", "api/movie/**").hasAnyRole("ADMIN")
+            .antMatchers("/api/users/sign_in**").permitAll()
+            //.antMatchers("/api/movies").hasAnyRole("USER")
+            //.antMatchers("/api/movies", "api/movie/**").hasAnyRole("ADMIN")
             .anyRequest().authenticated()
             .and()
             .addFilter(new JWTAuthenticationFilter(authenticationManager()))
@@ -39,11 +42,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
 
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder build) throws Exception{
-		PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-		UserBuilder users = User.builder().passwordEncoder(encoder::encode);
-		
-		build.userDetailsService(userDetailsService);
-		
-		
+		build.userDetailsService(userDetailsService)
+		.passwordEncoder(passwordEncoder);
 	}
 }

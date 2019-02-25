@@ -8,20 +8,21 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
 public class RestReviewsServiceApplication implements CommandLineRunner{
-	
-	@Autowired
-	private BCryptPasswordEncoder passwordEncoder;
 
+    @Autowired
+    BCryptPasswordEncoder passwordEncoder;
+	
 	public static void main(String[] args) {
 		SpringApplication.run(RestReviewsServiceApplication.class, args);
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
-		// TODO Auto-generated method stub
+		String password = "12345";		
 		
+		for(int i = 0; i<2; i++) {
+			String bcryptPassword = passwordEncoder.encode(password);
+			System.out.println("pass_encriptado "+ bcryptPassword);
+		}
 	}
-	
-	
-
 }

@@ -19,11 +19,11 @@ public class UserRestController {
 	@Autowired
 	private IUserService userService;
 	
-	@GetMapping("/sign_in")
+	/*@PostMapping("/sign_in")
 	@ResponseStatus(HttpStatus.OK)
-	public User loginUser(@RequestBody User user) {
+	public ResponseEntity<Void> loginUser(@RequestBody User user) {
 		return null;
-	}
+	}*/
 	
 	@PostMapping("/sign_up")
 	public ResponseEntity<Void> registerUser(@RequestBody User user) {
