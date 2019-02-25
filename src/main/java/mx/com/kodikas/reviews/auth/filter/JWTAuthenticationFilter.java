@@ -1,6 +1,8 @@
 package mx.com.kodikas.reviews.auth.filter;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,12 +16,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -61,9 +65,17 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 			Authentication authResult) throws IOException, ServletException {
 		//SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+		
+		Collection<? extends GrantedAuthority> roles = authResult.getAuthorities();
+		Claims claims = Jwts.claims();
+		claims.put("authorities", new ObjectMapper().writeValueAsString(claims));
+		
 		String token = Jwts.builder()
+				.setClaims(claims)
 				.setSubject(authResult.getName())
 				.signWith(SignatureAlgorithm.HS512, "Mi.Clave.Secreta.123456".getBytes())
+				.setIssuedAt(new Date())
+				.setExpiration(new Date(System.currentTimeMillis() + 140000000L))
 				.compact();
 		
 		response.addHeader("Authorization", "Bearer "+token);
@@ -78,7 +90,19 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		response.setStatus(200);
 		response.setContentType("application/json");
 	}
-	
-	
+
+	@Override
+	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+			AuthenticationException failed) throws IOException, ServletException {
+		
+		Map<String, Object> body = new HashMap<String, Object>();
+		body.put("mensaje", "Error de autenticación: username o password incorrecto!");
+		body.put("error", failed.getMessage());
+		
+		response.getWriter().write(new ObjectMapper().writeValueAsString(body));
+		response.setStatus(401);
+		response.setContentType("application/json");
+		
+	}
 
 }

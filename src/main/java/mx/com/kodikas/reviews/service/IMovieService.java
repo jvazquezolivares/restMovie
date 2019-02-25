@@ -22,4 +22,6 @@ public interface IMovieService {
     
     public List<Comment> getCommentsByMovieId(Long idMovie);
     
+    public Movie createMovie(Movie movie);
+    
 }

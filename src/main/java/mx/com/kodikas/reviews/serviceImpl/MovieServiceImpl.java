@@ -53,7 +53,12 @@ public class MovieServiceImpl implements IMovieService{
 	@Transactional
 	public void deleteMovie(Movie movie) {
 		movieDao.delete(movie);
-		
+	}
+	
+	@Override
+	@Transactional
+	public Movie createMovie(Movie movie) {
+		 return movieDao.save(movie);
 	}
 
 	@Override

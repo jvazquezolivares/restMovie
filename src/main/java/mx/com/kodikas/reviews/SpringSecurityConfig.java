@@ -15,6 +15,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import mx.com.kodikas.reviews.auth.filter.JWTAuthenticationFilter;
+import mx.com.kodikas.reviews.auth.filter.JWTAuthorizationFilter;
 import mx.com.kodikas.reviews.serviceImpl.JpaUserDetailsService;
 
 @EnableGlobalMethodSecurity(securedEnabled=true)
@@ -36,6 +37,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
             .anyRequest().authenticated()
             .and()
             .addFilter(new JWTAuthenticationFilter(authenticationManager()))
+            .addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtService))
             .csrf().disable()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}

@@ -19,12 +19,6 @@ public class UserRestController {
 	@Autowired
 	private IUserService userService;
 	
-	/*@PostMapping("/sign_in")
-	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<Void> loginUser(@RequestBody User user) {
-		return null;
-	}*/
-	
 	@PostMapping("/sign_up")
 	public ResponseEntity<Void> registerUser(@RequestBody User user) {
 		if(userService.findUser(user) == null ) {

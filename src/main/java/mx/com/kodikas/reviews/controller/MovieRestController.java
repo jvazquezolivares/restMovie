@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,8 +25,14 @@ public class MovieRestController {
 	IMovieService movieService; 
 	
 	@GetMapping("listAll")
-	public List<Movie> listAll(){
-		return null;
+	public ResponseEntity<?> listAll(){
+		List<Movie> movies = movieService.findAll();
+		if(movies != null && !movies.isEmpty()) {
+			return new ResponseEntity<>(movies, HttpStatus.OK);
+		}else {
+			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+		}
+		
 	}
 	
 	@GetMapping("movie/{id}")
@@ -39,16 +46,24 @@ public class MovieRestController {
 	}
 	
 	@GetMapping("movie/{id}/comments")
-	public List<Comment	> movieComments(@PathVariable Long id) {
-		return null;
+	public ResponseEntity<?> movieComments(@PathVariable Long id) {
+		Movie movie = movieService.findMovieById(id);
+		List<Comment> movieComments = null;
+		if(movie != null) {
+			movieComments = movie.getComments();
+			return new ResponseEntity<>(movieComments, HttpStatus.OK);
+		}else {
+			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+		}
 	}
 	
-	@PutMapping("movie/{id}")
-	public ResponseEntity<?> updateMovie(
-			@PathVariable(value="id")Long id, @RequestBody Movie movie) {
-		Movie entity = movieService.findMovieById(id);
-		
-		return null;
+	@PostMapping("create")
+	public ResponseEntity<?> createMovie(@RequestBody Movie movieParam){
+		Movie movie = movieService.createMovie(movieParam);
+		if (movie != null) {
+			return new ResponseEntity<>(movie, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+		}
 	}
-
 }
