@@ -11,10 +11,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
+@Table(name = "comments")
 public class Comment implements Serializable{
 
 	@Id
@@ -27,6 +29,10 @@ public class Comment implements Serializable{
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user = new User();
+	
+	@ManyToOne
+	@JoinColumn(name = "movie_id")
+	private Movie movie = new Movie();
 
 	@Column(name="created_at")
 	@Temporal(TemporalType.DATE)
@@ -39,33 +45,72 @@ public class Comment implements Serializable{
 	
 	
 	
-	private Long getId() {
+	public Long getId() {
 		return id;
 	}
 
 
 
-	private void setId(Long id) {
+	public void setId(Long id) {
 		this.id = id;
+	}
+	
+	
+
+
+
+	public String getComment() {
+		return comment;
 	}
 
 
 
-	private Date getCreatedAt() {
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
+
+
+	public User getUser() {
+		return user;
+	}
+
+
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+	
+
+
+
+
+	public Movie getMovie() {
+		return movie;
+	}
+
+
+
+	public void setMovie(Movie movie) {
+		this.movie = movie;
+	}
+
+
+
+	public Date getCreatedAt() {
 		return createdAt;
 	}
 
 
 
-	private void setCreatedAt(Date createdAt) {
+	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
 	}
-
-
+	
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 	
 }
